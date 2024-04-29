@@ -1,0 +1,20 @@
+{% extends 'flatpages/default.html' %}
+
+<!--{% load custom_filters %}-->
+
+{% block title %}
+Объявление
+{% endblock title %}
+
+<!-- В контенте на странице мы выводим пост -->
+{% block content %}
+<h1>Объявление</h1>
+
+<h4>{{ A_ads.title }}</h4>
+{% for category in A_ads.category.all %}
+    <a href="{% url 'category_list' ads.id %}" style="...">"{{ category }}"</a>
+{% endfor %}
+<h6>{{ A_ads.time_create|date:'d M Y' }}</h6>
+<br>{{ A_ads.content}}
+
+{% endblock content %}

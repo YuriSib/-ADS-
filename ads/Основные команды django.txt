@@ -1,0 +1,8 @@
+python manage.py runserver
+
+python manage.py makemigrations
+python manage.py migrate
+
+django-admin startproject ads
+python manage.py createsuperuser
+python manage.py startapp news

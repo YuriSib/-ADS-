@@ -1,0 +1,49 @@
+{% extends 'flatpages/default.html' %}
+
+{% block title %}
+Объявления
+{% endblock title %}
+
+{% block content %}
+    <h1>Все объявления</h1>
+    <h3>Объявлений на странице: {{ Ads|length }}</h3>
+    <hr>
+    {% if Ads %}
+        <!-- Для каждого объявления будет генерироваться новая строчка -->
+        {% for a_ads in Ads %}
+            <!-- Здесь можно получать доступ к полям объекта модели. -->
+            <h5><a href="http://127.0.0.1:8000/ads/{{ a_ads.id }}">{{ ads.title }}</a></h5>
+            <h6>{% for category in ads.category.all %}
+                    <a href="{% url 'category_list' category.id %}" style="...">"{{ category }}"</a>
+                {% endfor %}</h6>
+            {{ ads.time_create|date:'d M Y' }}
+            {{ ads.content|truncatewords:20 }}
+        {% endfor %}
+        <br>
+    {% else %}
+        <h2>Объявлений пока нет!</h2>
+    {% endif %}
+
+<!-- Добавляем пагинацию на страницу-->
+    {# Информация о предыдущих страницах #}
+   {% if page_obj.has_previous %}
+        <a href="?page=1">1</a>
+        {% if page_obj.previous_page_number != 1 %}
+            ...
+            <a href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a>
+            {% endif %}
+        {% endif %}
+
+<!--{# Информация о текущей странице #}-->
+    {{ page_obj.number }}
+
+<!--{# Информация о следующих страницах #}-->
+   {% if page_obj.has_next %}
+       <a href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a>
+       {% if paginator.num_pages != page_obj.next_page_number %}
+           ...
+           <a href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a>
+       {% endif %}
+   {% endif %}
+
+{% endblock content %}
