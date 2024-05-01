@@ -1,5 +1,5 @@
 from django import forms
-from .models import Ads
+from .models import Ads, Response
 
 
 class AdsForm(forms.ModelForm):
@@ -9,3 +9,9 @@ class AdsForm(forms.ModelForm):
         widgets = {
             'time_create': forms.DateInput(attrs={'type': 'date'}),
         }
+
+
+class ResponseForm(forms.ModelForm):
+    class Meta:
+        model = Response
+        fields = ['text']

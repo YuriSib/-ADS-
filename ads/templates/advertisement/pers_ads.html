@@ -9,16 +9,12 @@
     <h3>Объявлений на странице: {{ My_ads|length }}</h3>
     <hr>
     {% if My_ads %}
-        <!-- Для каждого объявления будет генерироваться новая строчка -->
         {% for a_ads in My_ads %}
-            <!-- Здесь можно получать доступ к полям объекта модели. -->
             <h1>________________________________________</h1>
             <h5><a href="http://127.0.0.1:8000/ads/{{ a_ads.id }}">{{ a_ads.title }}</a></h5>
-            <h6>{% for category in a_ads.category.all %}
-                    <a href="{% url 'category_list' category.id %}" style="...">"{{ category }}"</a>
-                {% endfor %}</h6>
             {{ a_ads.time_create|date:'d M Y' }}
             {{ a_ads.content|truncatewords:4|safe }}
+            <h5>Количество отзывов: {{ My_ads|length }}</h5>
 
             <br>
             <a href="http://127.0.0.1:8000/ads/{{ a_ads.id }}/edit/">

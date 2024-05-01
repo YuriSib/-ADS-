@@ -24,7 +24,7 @@ class Ads(models.Model):
     category = models.ForeignKey('Category', on_delete=models.CASCADE, verbose_name='Категории')
 
     def __str__(self):
-        return f'{self.title}: {self.content[:50]}'
+        return f'{self.title}'
 
 
 class Category(models.Model):
@@ -35,6 +35,8 @@ class Category(models.Model):
 
 
 class Response(models.Model):
-    ads = models.ForeignKey(Ads, on_delete=models.CASCADE, verbose_name='Автор')
+    ads = models.ForeignKey(Ads, on_delete=models.CASCADE, verbose_name='Объявление')
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Автор отклика')
+
+    text = models.CharField(max_length=2000, default='Текст отклика', verbose_name='Отклик')
 
