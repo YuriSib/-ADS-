@@ -1,23 +1,37 @@
 {% extends 'flatpages/default.html' %}
 
 {% block title %}
-Объявления
+Мои объявления
 {% endblock title %}
 
 {% block content %}
-    <h1>Все объявления</h1>
-    <h3>Объявлений на странице: {{ Ads|length }}</h3>
+    <h1>Все объявления пользователя {{ user }}</h1>
+    <h3>Объявлений на странице: {{ My_ads|length }}</h3>
     <hr>
-    {% if Ads %}
+    {% if My_ads %}
         <!-- Для каждого объявления будет генерироваться новая строчка -->
-        {% for a_ads in Ads %}
+        {% for a_ads in My_ads %}
             <!-- Здесь можно получать доступ к полям объекта модели. -->
+            <h1>________________________________________</h1>
             <h5><a href="http://127.0.0.1:8000/ads/{{ a_ads.id }}">{{ a_ads.title }}</a></h5>
             <h6>{% for category in a_ads.category.all %}
                     <a href="{% url 'category_list' category.id %}" style="...">"{{ category }}"</a>
                 {% endfor %}</h6>
             {{ a_ads.time_create|date:'d M Y' }}
-            {{ a_ads.content|truncatewords:20|safe }}
+            {{ a_ads.content|truncatewords:4|safe }}
+
+            <br>
+            <a href="http://127.0.0.1:8000/ads/{{ a_ads.id }}/edit/">
+                 <button style="display: inline-block; padding: 6px 12px; background-color: #007bff; color: white;
+                 border: none; cursor: pointer;">Редактировать</button>
+            </a>
+
+            <a href="http://127.0.0.1:8000/ads/{{ a_ads.id }}/delete/">
+                <button style="display: inline-block; padding: 6px 12px; background-color: #28a745; color: white;
+                border: none; cursor: pointer;">Удалить</button>
+            </a>
+            <h1>________________________________________</h1>
+
         {% endfor %}
         <br>
     {% else %}

@@ -1,6 +1,8 @@
 from django.contrib.auth.models import User
 from django.db import models
 from tinymce.models import HTMLField
+from ckeditor.fields import RichTextField
+from ckeditor_uploader.fields import RichTextUploadingField
 
 
 # class Author(models.Model):
@@ -14,7 +16,9 @@ class Ads(models.Model):
     title = models.CharField(max_length=100, default='Без названия', verbose_name='Заголовок')
     time_create = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
     # content = models.CharField(max_length=2500, default='default content', verbose_name='Контент')
-    content = HTMLField(max_length=2500, default=False, verbose_name='Контент')
+    # content = HTMLField(max_length=20000, default=False, verbose_name='Контент')
+    # content = RichTextField()
+    content = RichTextUploadingField(null=True, config_name='default')
 
     author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Автор')
     category = models.ForeignKey('Category', on_delete=models.CASCADE, verbose_name='Категории')
