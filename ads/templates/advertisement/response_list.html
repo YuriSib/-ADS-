@@ -1,0 +1,72 @@
+{% extends 'flatpages/default.html' %}
+
+{% block title %}
+Отклики на мои объявления
+{% endblock title %}
+
+{% block content %}
+    <h1>Отклики</h1>
+    <h3>Откликов на странице: {{ Responses|length }}</h3>
+    <hr>
+    {% if Responses %}
+        <!-- Для каждого объявления будет генерироваться новая строчка -->
+
+    <style>
+            table {
+              margin: 0 auto; /* Центрируем таблицу по горизонтали */
+              border-collapse: collapse; /* Убираем промежутки между ячейками */
+              width: 50%; /* Ширина таблицы */
+            }
+            th, td {
+              padding: 8px; /* Отступ внутри ячеек */
+              text-align: center; /* Выравниваем текст по центру в ячейках */
+            }
+        </style>
+
+        <table>
+            {% for response in Responses %}
+                {% if Responses %}
+                <tr>
+                    <td>{{ response.user }}</td>
+                    <td>{{ response.text }}</td>
+                    <td>
+                        <a href="{% url 'response_delete' response.id %}">
+                            <button style="display: inline-block; padding: 6px 12px; background-color: #B22222;
+                                       color: white; border: none; cursor: pointer;">Удалить отклик</button>
+                        </a>
+                    </td>
+                    <td>
+                        <a href="{% url 'my_response' response.id %}">
+                            <button style="display: inline-block; padding: 6px 12px; background-color: #007bff;
+                                       color: white; border: none; cursor: pointer;">Принять отклик</button>
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+    {% else %}
+        <h2>Объявлений пока нет!</h2>
+    {% endif %}
+
+<!-- Добавляем пагинацию на страницу-->
+    {# Информация о предыдущих страницах #}
+   {% if page_obj.has_previous %}
+        <a href="?page=1">1</a>
+        {% if page_obj.previous_page_number != 1 %}
+            ...
+            <a href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a>
+            {% endif %}
+        {% endif %}
+
+<!--{# Информация о текущей странице #}-->
+    {{ page_obj.number }}
+
+<!--{# Информация о следующих страницах #}-->
+   {% if page_obj.has_next %}
+       <a href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a>
+       {% if paginator.num_pages != page_obj.next_page_number %}
+           ...
+           <a href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a>
+       {% endif %}
+   {% endif %}
+
+{% endblock content %}

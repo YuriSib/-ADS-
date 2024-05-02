@@ -13,14 +13,11 @@
         {% for a_ads in Ads %}
             <h1>______________________________________________________</h1>
             <!-- Здесь можно получать доступ к полям объекта модели. -->
-            <h5><a href="http://127.0.0.1:8000/ads/{{ a_ads.id }}">{{ a_ads.title }}</a></h5>
-            <h6>{% for category in a_ads.category.all %}
-                    <a href="{% url 'category_list' category.id %}" style="...">"{{ category }}"</a>
-                {% endfor %}</h6>
+            <h5><a href="{% url 'a_ads' a_ads.id %}">{{ a_ads.title }}</a></h5>
             {{ a_ads.time_create|date:'d M Y' }}
             {% if user.is_authenticated %}
                 <br>
-                <a href="ads/{{ a_ads.id }}/response">
+                <a href="{% url 'response' a_ads.id %}">
                     <button style="display: inline-block; padding: 6px 12px; background-color: #007bff;
                                     color: white; border: none; cursor: pointer;">Откликнуться</button>
                 </a>

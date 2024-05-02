@@ -1,0 +1,51 @@
+{% extends 'flatpages/default.html' %}
+
+{% load custom_tags %}
+
+{% block title %}
+Все отклики
+{% endblock title %}
+
+{% block content %}
+    <h1>Все отклики по объявлению {{ user }}</h1>
+    <h3>Откликов всего: {{ My_response|length }}</h3>
+    <hr>
+    {% if My_response %}
+
+        <style>
+            table {
+              margin: 0 auto; /* Центрируем таблицу по горизонтали */
+              border-collapse: collapse; /* Убираем промежутки между ячейками */
+              width: 50%; /* Ширина таблицы */
+            }
+            th, td {
+              padding: 8px; /* Отступ внутри ячеек */
+              text-align: center; /* Выравниваем текст по центру в ячейках */
+            }
+        </style>
+
+        <table>
+            {% for response in My_response %}
+                <tr>
+                    <td>{{ response.user }}</td>
+                    <td>{{ response.text }}</td>
+                    <td>
+                        <a href="{% url 'response_delete' response.id %}">
+                            <button style="display: inline-block; padding: 6px 12px; background-color: #B22222;
+                                       color: white; border: none; cursor: pointer;">Удалить отклик</button>
+                        </a>
+                    </td>
+                    <td>
+                        <a href="{% url 'my_response' response.id %}">
+                            <button style="display: inline-block; padding: 6px 12px; background-color: #007bff;
+                                       color: white; border: none; cursor: pointer;">Принять отклик</button>
+                        </a>
+                    </td>
+                </tr>
+
+                {% endfor %}
+    {% else %}
+        <h2>Откликов пока нет!</h2>
+    {% endif %}
+
+{% endblock content %}

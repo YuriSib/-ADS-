@@ -1,5 +1,7 @@
 {% extends 'flatpages/default.html' %}
 
+{% load custom_tags %}
+
 {% block title %}
 Мои объявления
 {% endblock title %}
@@ -11,20 +13,25 @@
     {% if My_ads %}
         {% for a_ads in My_ads %}
             <h1>________________________________________</h1>
-            <h5><a href="http://127.0.0.1:8000/ads/{{ a_ads.id }}">{{ a_ads.title }}</a></h5>
+            <h5><a href="{% url 'a_ads' a_ads.id %}">{{ a_ads.title }}</a></h5>
             {{ a_ads.time_create|date:'d M Y' }}
-            {{ a_ads.content|truncatewords:4|safe }}
-            <h5>Количество отзывов: {{ My_ads|length }}</h5>
+<!--            {{ a_ads.content|truncatewords:4|safe }}-->
+            <h5>Количество отзывов: {% get_quantity_response a_ads.id %}</h5>
 
             <br>
-            <a href="http://127.0.0.1:8000/ads/{{ a_ads.id }}/edit/">
+            <a href="{% url 'ads_edit' a_ads.id %}">
                  <button style="display: inline-block; padding: 6px 12px; background-color: #007bff; color: white;
                  border: none; cursor: pointer;">Редактировать</button>
             </a>
 
-            <a href="http://127.0.0.1:8000/ads/{{ a_ads.id }}/delete/">
+            <a href="{% url 'ads_delete' a_ads.id %}">
                 <button style="display: inline-block; padding: 6px 12px; background-color: #28a745; color: white;
                 border: none; cursor: pointer;">Удалить</button>
+            </a>
+
+            <a href="{% url 'my_response' a_ads.id %}">
+                <button style="display: inline-block; padding: 6px 12px; background-color: #FF8C00; color: white;
+                border: none; cursor: pointer;">Отклки</button>
             </a>
             <h1>________________________________________</h1>
 

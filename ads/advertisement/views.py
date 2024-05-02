@@ -36,6 +36,19 @@ class AdsList(ListView):
         return context
 
 
+class ResponseList(LoginRequiredMixin, ListView):
+    model = Response
+    ordering = 'time_create'
+
+    template_name = 'advertisement/response_list.html'
+    context_object_name = 'Responses'
+    paginate_by = 10
+
+    def get_queryset(self):
+        queryset = Response.objects.filter(user=self.request.user.id)
+        return queryset
+
+
 class AdsDetail(DetailView):
     model = Ads
     template_name = 'advertisement/a_ads.html'
@@ -86,6 +99,12 @@ class AdsDelete(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('ads_list')
 
 
+class ResponseDelete(LoginRequiredMixin, DeleteView):
+    model = Response
+    template_name = 'advertisement/delete_response.html'
+    success_url = reverse_lazy('my_ads')
+
+
 class MyAds(LoginRequiredMixin, ListView):
     model = Ads
     ordering = 'time_create'
@@ -97,6 +116,20 @@ class MyAds(LoginRequiredMixin, ListView):
     def get_queryset(self):
         queryset = Ads.objects.filter(author_id=self.request.user.id)
         print(f"queryset - {queryset}")
+        return queryset
+
+
+class AdsResponse(LoginRequiredMixin, ListView):
+    model = Response
+    ordering = 'time_create'
+
+    template_name = 'advertisement/pers_response.html'
+    context_object_name = 'My_response'
+    paginate_by = 10
+
+    def get_queryset(self):
+        ads_id = self.request.path[-1]
+        queryset = Response.objects.filter(ads=ads_id)
         return queryset
 
 

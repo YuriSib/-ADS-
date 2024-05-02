@@ -1,7 +1,8 @@
 from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
-from .views import AdsCreate, AdsList, AdsDetail, AdsEdit, AdsDelete, MyAds, LeaveResponse
+from .views import (AdsCreate, AdsList, AdsDetail, AdsEdit, AdsDelete, MyAds, LeaveResponse, AdsResponse,
+                    ResponseDelete, ResponseList)
 
 
 urlpatterns = [
@@ -14,5 +15,8 @@ urlpatterns = [
    path('ads/my_ads/', MyAds.as_view(), name='my_ads'),
    path('ads/<int:pk>/edit/', AdsEdit.as_view(), name='ads_edit'),
    path('ads/<int:pk>/delete/', AdsDelete.as_view(), name='ads_delete'),
-   path('ads/<int:pk>/response', LeaveResponse.as_view(), name='response')
+   path('ads/<int:pk>/response', LeaveResponse.as_view(), name='response'),
+   path('ads/my_response/<int:pk>', AdsResponse.as_view(), name='my_response'),
+   path('ads/my_response/list', ResponseList.as_view(), name='my_response'),
+   path('ads/my_response/<int:pk>/delete/', ResponseDelete.as_view(), name='response_delete'),
 ]
