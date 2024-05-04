@@ -4,14 +4,17 @@ import logging
 
 from django.shortcuts import render
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View, TemplateView
-from .models import Ads, Category, Response
+from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from django.shortcuts import redirect
-from .filters import ResponseFilter
+from django.core.mail import send_mail
 
+from .models import Ads, Category, Response
+from .filters import ResponseFilter
 from .forms import AdsForm, ResponseForm
+from sign.passwords import host_password, login
 
 
 class AdsList(ListView):
@@ -52,9 +55,9 @@ class ResponseList(LoginRequiredMixin, ListView):
         for ads in ads_queryset:
             queryset.union(Response.objects.filter(ads_id=ads.id))
 
-        self.filterset = ResponseFilter(queryset)
+        self.filterset = ResponseFilter(self.request.GET, queryset)
         print(type(queryset))
-        return self.filterset.qs
+        return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -97,6 +100,31 @@ class AdsCreate(LoginRequiredMixin, CreateView):
         else:
             print('Пост не сохранен')
             print(self.get_context_data(form=form))
+
+
+class LeaveResponse(LoginRequiredMixin, CreateView):
+    form_class = ResponseForm
+    model = Response
+    template_name = 'advertisement/response.html'
+    success_url = reverse_lazy('ads_list')
+
+    def form_valid(self, form):
+        response = form.save(commit=False)
+
+        response.user = self.request.user
+        ads_id = int(self.request.path.replace('/ads/', '').replace('/response', ''))
+        response.ads = Ads.objects.get(pk=ads_id)
+
+        response.save()
+
+        # user_email = User.objects.get(pk=self.request.user).email
+        # send_mail(
+        #     subject=f'{response.user} {response.date.strftime("%Y-%M-%d")}',
+        #     message=response.ads,
+        #     from_email=f'{login}@yandex.ru',
+        #     recipient_list=[user_email]
+        # )
+        return redirect('/ads/')
 
 
 class AdsEdit(LoginRequiredMixin, UpdateView):
@@ -147,18 +175,4 @@ class AdsResponse(LoginRequiredMixin, ListView):
         return queryset
 
 
-class LeaveResponse(LoginRequiredMixin, CreateView):
-    form_class = ResponseForm
-    model = Response
-    template_name = 'advertisement/response.html'
-    success_url = reverse_lazy('ads_list')
 
-    def form_valid(self, form):
-        response = form.save(commit=False)
-
-        response.user = self.request.user
-        ads_id = int(self.request.path.replace('/ads/', '').replace('/response', ''))
-        response.ads = Ads.objects.get(pk=ads_id)
-
-        response.save()
-        return redirect('/ads/')
