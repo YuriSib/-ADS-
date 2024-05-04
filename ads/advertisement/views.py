@@ -49,19 +49,19 @@ class ResponseList(LoginRequiredMixin, ListView):
     paginate_by = 20
 
     def get_queryset(self):
-        queryset = super().get_queryset()
         ads_queryset = Ads.objects.filter(author_id=self.request.user.id)
-        # queryset = Response.objects.none()
-        for ads in ads_queryset:
-            queryset.union(Response.objects.filter(ads_id=ads.id))
+        if ads_queryset:
+            for ads in ads_queryset:
+                queryset = Response.objects.filter(ads=ads.id)
+                queryset.union(Response.objects.filter(ads=ads.id))
+        else:
+            queryset = Response.objects.none()
 
         self.filterset = ResponseFilter(self.request.GET, queryset)
-        print(type(queryset))
-        return queryset
+        return self.filterset.qs
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Добавляем в контекст объект фильтрации.
         context['filterset'] = self.filterset
         return context
 
@@ -115,15 +115,17 @@ class LeaveResponse(LoginRequiredMixin, CreateView):
         ads_id = int(self.request.path.replace('/ads/', '').replace('/response', ''))
         response.ads = Ads.objects.get(pk=ads_id)
 
-        response.save()
+        user_email = User.objects.get(pk=response.ads.author.id).email
+        # print(Ads.objects.get(pk=response.ads.id))
+        send_mail(
+            subject=f'{response.user.username}',
+            message=f'''{response.user.username} откликнулся на ваше объявление: 
+            "{Ads.objects.get(pk=response.ads.id)}" ''',
+            from_email=f'''{login}@yandex.ru''',
+            recipient_list=[user_email]
+        )
 
-        # user_email = User.objects.get(pk=self.request.user).email
-        # send_mail(
-        #     subject=f'{response.user} {response.date.strftime("%Y-%M-%d")}',
-        #     message=response.ads,
-        #     from_email=f'{login}@yandex.ru',
-        #     recipient_list=[user_email]
-        # )
+        response.save()
         return redirect('/ads/')
 
 
@@ -175,4 +177,35 @@ class AdsResponse(LoginRequiredMixin, ListView):
         return queryset
 
 
+class AcceptResponse(UpdateView):
+    model = Response
+    fields = ["accept_status"]
+    template_name = 'advertisement/accept.html'
+    success_url = reverse_lazy('my_response')
+
+    def form_valid(self, form):
+        instance = form.save(commit=False)
+
+        new_value = 1
+        instance.attribute_to_update = new_value
+
+        print(self.object)
+        author_response = Response.objects.get(pk=self.object.pk).user
+        print(author_response)
+        email_author_response = author_response.email
+        print(email_author_response)
+        ads_id = Response.objects.get(pk=self.object.pk).ads
+        ads_title = Ads.objects.get(pk=ads_id.id).title
+        print(ads_title)
+
+        send_mail(
+            subject=f'{author_response}',
+            message=f'''Ваш отклик на объявление "{ads_title}" был принят''',
+            from_email=f'''{login}@yandex.ru''',
+            recipient_list=[email_author_response]
+        )
+
+        instance.save()
+
+        return super().form_valid(form)
 

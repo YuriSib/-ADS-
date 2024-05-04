@@ -38,5 +38,6 @@ class Response(models.Model):
     ads = models.ForeignKey(Ads, on_delete=models.CASCADE, verbose_name='Объявление')
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Автор отклика')
 
+    accept_status = models.BooleanField(default = False, verbose_name='Отклик принят')
     text = models.CharField(max_length=2000, default='Текст отклика', verbose_name='Отклик')
 

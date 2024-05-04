@@ -166,6 +166,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = '/sign/pers_acc/'
 LOGIN_URL = '/sign/login/'
 
+
+    # Для отображения сообщений в терминале, без отправления их на почту
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_PORT = 465
 EMAIL_HOST_USER = login
@@ -174,6 +177,7 @@ EMAIL_USE_SSL = True
 DEFAULT_FROM_EMAIL = f"{EMAIL_HOST_USER}@yandex.ru"
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+
 
 CKEDITOR_BASE_PATH = '/static/ckeditor/ckeditor/'
 CKEDITOR_UPLOAD_PATH = 'uploads/'
