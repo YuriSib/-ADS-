@@ -9,6 +9,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from django.shortcuts import redirect
+from .filters import ResponseFilter
 
 from .forms import AdsForm, ResponseForm
 
@@ -38,15 +39,28 @@ class AdsList(ListView):
 
 class ResponseList(LoginRequiredMixin, ListView):
     model = Response
-    ordering = 'time_create'
+    ordering = 'user'
 
     template_name = 'advertisement/response_list.html'
     context_object_name = 'Responses'
-    paginate_by = 10
+    paginate_by = 20
 
     def get_queryset(self):
-        queryset = Response.objects.filter(user=self.request.user.id)
-        return queryset
+        queryset = super().get_queryset()
+        ads_queryset = Ads.objects.filter(author_id=self.request.user.id)
+        # queryset = Response.objects.none()
+        for ads in ads_queryset:
+            queryset.union(Response.objects.filter(ads_id=ads.id))
+
+        self.filterset = ResponseFilter(queryset)
+        print(type(queryset))
+        return self.filterset.qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Добавляем в контекст объект фильтрации.
+        context['filterset'] = self.filterset
+        return context
 
 
 class AdsDetail(DetailView):

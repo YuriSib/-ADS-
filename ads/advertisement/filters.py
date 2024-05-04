@@ -9,7 +9,7 @@ from django.db.models.query import QuerySet
 # должен чем-то напомнить знакомые вам Django дженерики.
 
 
-class PostFilter(FilterSet):
+class ResponseFilter(FilterSet):
 
     class Meta:
         # В Meta классе мы должны указать Django модель,

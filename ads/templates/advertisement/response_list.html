@@ -6,6 +6,8 @@
 
 {% block content %}
     <h1>Отклики</h1>
+
+
     <h3>Откликов на странице: {{ Responses|length }}</h3>
     <hr>
     {% if Responses %}
@@ -42,6 +44,7 @@
                         </a>
                     </td>
                 </tr>
+                {% endif %}
             {% endfor %}
     {% else %}
         <h2>Объявлений пока нет!</h2>

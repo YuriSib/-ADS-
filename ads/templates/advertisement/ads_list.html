@@ -15,6 +15,7 @@
             <!-- Здесь можно получать доступ к полям объекта модели. -->
             <h5><a href="{% url 'a_ads' a_ads.id %}">{{ a_ads.title }}</a></h5>
             {{ a_ads.time_create|date:'d M Y' }}
+            <br>Автор объявления - {{ a_ads.author }}
             {% if user.is_authenticated %}
                 <br>
                 <a href="{% url 'response' a_ads.id %}">
