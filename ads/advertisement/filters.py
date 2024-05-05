@@ -5,7 +5,6 @@ from django.contrib.auth.models import User
 from django.db.models.query import QuerySet
 
 
-
 class ResponseFilter(FilterSet):
 
     class Meta:

@@ -1,0 +1,15 @@
+{% extends 'flatpages/default.html' %}
+
+{% block title %}
+Новость
+{% endblock title %}
+
+<!-- В контенте на странице мы выводим пост -->
+{% block content %}
+<h1>Новость</h1>
+
+<h4>{{ A_news.title }}</h4>
+<h6>{{ A_ads.time_create|date:'d M Y' }}</h6>
+<br>{{ A_ads.content|safe}}
+
+{% endblock content %}

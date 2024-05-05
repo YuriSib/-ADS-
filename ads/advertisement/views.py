@@ -10,32 +10,38 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from django.shortcuts import redirect
 from django.core.mail import send_mail
+from django.db.models.signals import post_save
 
-from .models import Ads, Category, Response
+from .models import Ads, Category, Response, News
 from .filters import ResponseFilter
-from .forms import AdsForm, ResponseForm
+from .forms import AdsForm, ResponseForm, NewsForm
 from sign.passwords import host_password, login
+
+
+# def notify_managers_appointment(sender, instance, created, **kwargs):
+#     mail_managers(
+#
+#     )
+
+
+# post_save.connect(notify_managers_appointment, sender=News)
 
 
 class AdsList(ListView):
     model = Ads
     ordering = 'time_create'
 
-    # queryset = Post.objects.order_by('time_create')
-
     template_name = 'advertisement/ads_list.html'
     context_object_name = 'Ads'
-    paginate_by = 5
+    paginate_by = 10
 
     def get_queryset(self):
-        # self.category = get_object_or_404(Category, id=self.kwargs['pk'])
         queryset = Ads.objects.order_by('-time_create')
         return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['is_not_authors'] = not self.request.user.groups.filter(name='authors').exists()
-        # context['category'] = self.category
 
         return context
 
@@ -66,6 +72,17 @@ class ResponseList(LoginRequiredMixin, ListView):
         return context
 
 
+class NewsList(AdsList):
+    model = News
+
+    template_name = 'advertisement/news_list.html'
+    context_object_name = 'News'
+
+    def get_queryset(self):
+        queryset = News.objects.order_by('-time_create')
+        return queryset
+
+
 class AdsDetail(DetailView):
     model = Ads
     template_name = 'advertisement/a_ads.html'
@@ -74,6 +91,12 @@ class AdsDetail(DetailView):
     def get_object(self, *args, **kwargs):
         obj = super().get_object(queryset=self.queryset)
         return obj
+
+
+class NewsDetail(AdsDetail):
+    model = Ads
+    template_name = 'advertisement/a_news.html'
+    context_object_name = 'A_news'
 
 
 class AdsCreate(LoginRequiredMixin, CreateView):
@@ -100,6 +123,13 @@ class AdsCreate(LoginRequiredMixin, CreateView):
         else:
             print('Пост не сохранен')
             print(self.get_context_data(form=form))
+
+
+class NewsCreate(PermissionRequiredMixin, AdsCreate):
+    form_class = NewsForm
+    model = News
+    template_name = 'advertisement/news_edit.html'
+    success_url = reverse_lazy('news_list')
 
 
 class LeaveResponse(LoginRequiredMixin, CreateView):
@@ -208,4 +238,3 @@ class AcceptResponse(UpdateView):
         instance.save()
 
         return super().form_valid(form)
-

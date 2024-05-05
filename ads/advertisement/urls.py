@@ -2,7 +2,7 @@ from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
 from .views import (AdsCreate, AdsList, AdsDetail, AdsEdit, AdsDelete, MyAds, LeaveResponse, AdsResponse,
-                    ResponseDelete, ResponseList, AcceptResponse)
+                    ResponseDelete, ResponseList, AcceptResponse, NewsList)
 
 
 urlpatterns = [
@@ -20,4 +20,9 @@ urlpatterns = [
    path('ads/my_response/list', ResponseList.as_view(), name='my_response'),
    path('ads/my_response/<int:pk>/delete/', ResponseDelete.as_view(), name='response_delete'),
    path('ads/my_response/<int:pk>/accept/', AcceptResponse.as_view(), name='accept'),
+
+   path('news/', NewsList.as_view(), name='news_list'),
+   path('news/<int:pk>', AdsDetail.as_view(), name='a_news'),
+   path('news/create/', AdsEdit.as_view(), name='ads_create'),
+
 ]

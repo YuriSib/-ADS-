@@ -25,10 +25,14 @@
                <div class="collapse navbar-collapse" id="navbarResponsive">
                    <ul class="navbar-nav ml-auto">
                        <li class="nav-item active">
-                           <a class="nav-link" href="/">Home
-                               <span class="sr-only">(current)</span>
+                           <a class="nav-link" href="/">Объявления
+                               <span class="sr-only"></span>
                            </a>
                        </li>
+                       <li class="nav-item active">
+                           <a class="nav-link" href="http://127.0.0.1:8000/news/">Новости
+                               <span class="sr-only"></span>
+                           </a>
                        </li>
                    </ul>
                    {% if not user.is_authenticated %}
@@ -43,7 +47,7 @@
                   {% else %}
                   <ul class="navbar-nav ml-auto">
                       <li class="nav-item active">
-                          <a class="nav-link" href="/ads/create/">Создать новость</a>
+                          <a class="nav-link" href="/ads/create/">Разместить объявление</a>
                       </li>
                       <li class="nav-item active">
                           <a class="nav-link" href="http://127.0.0.1:8000/ads/my_ads/">Мои объявления</a>
