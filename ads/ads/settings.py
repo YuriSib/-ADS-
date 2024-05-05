@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.flatpages',
 
-    'advertisement',
+    # 'advertisement',
+    'advertisement.apps.AdvertisementConfig',
 
     'sign',
     'allauth',
